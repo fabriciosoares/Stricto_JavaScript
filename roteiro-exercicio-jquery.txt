@@ -1,0 +1,1021 @@
+Adicionar antes de </html>
+
+<script>
+    $('[required="required"]').prev('label').append( '<span>*</span>').children( 'span').addClass('required');
+    $('tbody tr:even').addClass('even');
+</script>
+
+------------------------------------------------------------------------------------------------------------
+
+Mudar tag <section> de criação de tarefas 
+<section id="taskCreation" class="not">
+
+------------------------------------------------------------------------------------------------------------
+
+Adicionar id no botao de adicionar Tarefa
+
+<a href="#" id="btnAddTask">Adicionar tarefa</a>
+
+------------------------------------------------------------------------------------------------------------
+
+Adicionar o codigo abaixo no fim da seção de <script> 
+
+$('#btnAddTask').click(function(evt) {
+	evt.preventDefault();
+	$('#taskCreation').removeClass('not');
+});
+
+$('#btnAddTask') seleciona o id correspondente
+click(...) adiciona uma função (o termo comum é callback) que será disparada no evento de clique no elemento
+
+//Alternativa ao codigo acima, mesmo resultado
+function btnAddClicked(evt) {
+    $(evt.target).preventDefault();
+    $('#taskCreation').removeClass('not');
+}
+$('#btnAddTask').click(btnAddClicked);
+
+O objeto evt.target é um objeto DOM
+$(evt.target) transforma este objeto DOM em objeto jQuery, o que permite explorar as funções associadas, API jQuery
+
+Compare evt.target.html() com $(evt.target).html()
+
+A função evt.preventDefault(); sinaliza que qualquer ação padrão associada com o elemento será suprimida
+- neste caso, se houvesse um href no link, não seguiríamos
+- a escolha entre botões via tag <a> ao invés de elementos de botão é uma questão 
+  de preferência
+
+A linha $('#taskCreation').removeClass('not') essencialmente remove a classe do elemento, o que faz com que 
+a propriedade display deixe de ser none e assuma valor padrão
+
+
+------------------------------------------------------------------------------------------------------------
+
+Qualquer elemento DOM é clicável, portanto, vamos dar destaque ao clique nas linhas da tabela
+
+Teste cada um dos trechos de código abaixo e observe a diferença entre eles
+
+$('tbody tr').click(function(evt) {
+    $(evt.target).toggleClass('rowHighlight');
+});
+
+$('tbody tr').click(function(evt) {
+    $(evt.target).siblings( ).toggleClass('rowHighlight');
+});
+
+$('tbody tr').click(function(evt) {
+    $(evt.target).siblings() .andSelf( ).toggleClass( 'rowHighlight');
+});
+
+$('tbody tr').click(function(evt) {
+    $(evt.target).closest( 'td').siblings( ).andSelf( ).toggleClass( 'rowHighlight');
+});
+
+------------------------------------------------------------------------------------------------------------
+
+Se quisermos que este evento de destacar linhas clicadas funcione com qualquer linha que 
+venha a ser adicionada à tabela, podemos utilizar a função on()
+
+No caso, estamos interessados nos elementos situados dentro de $('#tblTasks tbody')
+
+Se quisermos adicionar o listener a todos os elementos do documento, podemos utilizar $(document)
+
+Vamos adicionar um listener que permite remover linhas da tabela.
+Para isto, vamos adicionar uma célula adicional, que vai ter botões adicionais que utilizaremos mais tarde.
+
+Adicione o código abaixo para cada linha do corpo da tabela (<tbody>), imediatamente antes de cada </tr>
+
+<td>
+	<nav>
+		<a href="#" class="editRow">Editar</a>
+		<a href="#" class="completeRow">Completar</a>
+		<a href="#" class="deleteRow" >Deletar</a>
+	</nav>
+</td>
+
+Adicionalmente, no cabeçalho da tabela, adicione 
+
+<th>Ações</th>
+
+Para ajustar as larguras, adicione
+
+<colgroup>
+	<col width="40%">
+	<col width="15%">
+	<col width="15%">
+	<col width="30%">
+</colgroup>
+
+Para testar se está tudo ok, digite no console $('.deleteRow'), deve retornar três elementos
+
+------------------------------------------------------------------------------------------------------------
+
+Agora, podemos adicionar o event listener abaixo, para monitorar cliques dados em elementos
+com a classe deleteRow dentro da tabela
+
+$('#tblTasks tbody').on('click', '.deleteRow',   function(evt) {
+  evt.preventDefault();
+  $(evt.target).parents('tr').remove();
+});
+
+$(evt.target).parents('tr') retorna a tag <tr> que está entre os pais do elemento clicado
+
+A função remove() deleta o elemento do documento
+
+Isto obviamente funciona com as três linhas já presentes no documento.
+Se quiser testar que funciona com outras linhas, podemos inserir uma linha com o comando abaixo:
+$('#tblTasks tbody tr:first' ).clone().insertAfter('#tblTasks tbody tr:last')
+
+• dblclick: is invoked when an element is clicked twice in quick succession.
+• hover: is invoked when the mouse hovers over the element.
+• mousedown: is invoked when the mouse button is pressed, and before the button is release.
+• mouseup: is invoked when the mouse button is released.
+• keypress: is invoked each time the user types a key into an element, such as a text field.
+• keydown: is invoked when the user presses a key, but before the output is reflected on screen. This allows you to veto the action with preventDefault.
+• blur: is invoked when the focus leaves a form field. This is useful when you wish to validate content after the user has finished typing.
+• change: is invoked when the value of a form field changes.
+• focus: is invoked when the form field receives focus.
+For a complete list of events, see the jQuery documentation.
+
+------------------------------------------------------------------------------------------------------------
+
+Idealmente, queremos processar scripts apenas após construir o DOM. 
+Neste caso específico, não faz tanta diferença, pelo posicionamento do script (ao fim do documento).
+No entanto, é uma boa prática a ser adotada. 
+Para detectar que o DOM terminou de ser carregado, podemos observar o seguinte evento:
+
+$(document).ready()
+
+Assim como todos os outros listeners, podemos adicionar uma função de callback, mudando então o código para:
+
+$(document).ready(function() {
+	$('[required="required"]').prev('label').append( '<span>*</span>').children( 'span').addClass('required');
+	$('tbody tr:even').addClass('even');
+   
+	$('#btnAddTask').click(function(evt) {
+	    evt.preventDefault();
+	    $('#taskCreation').removeClass('not');
+	});
+   
+	$('tbody tr').click(function(evt) {
+	    $(evt.target).closest('td').siblings( ).andSelf( ).toggleClass( 'rowHighlight');
+	});
+   
+	$('#tblTasks tbody').on('click', '.deleteRow', function(evt) {
+	    evt.preventDefault();
+	    $(evt.target).parents('tr').remove();
+	});
+});
+
+------------------------------------------------------------------------------------------------------------
+
+Uma vantagem de jQuery é a possibilidade de estender a funcionalidade, por meio de plugins.
+
+A programação de plugins é feita por meio de convenções (programming by convention)
+
+A forma padrão de adicionar novas funcionalidades ao jQuery é a seguinte: 
+
+(function($) {
+    $.fn.extend({
+        funcionalidadeExtra: function() {
+			console.log('teste de criação de plugin')
+		}
+    });
+})(jQuery);
+
+Após executar o código acima, podemos chamar a nova função
+
+$('div').funcionalidadeExtra()
+
+------------------------------------------------------------------------------------------------------------
+
+A ideia então é criarmos um plugin que pega o conteúdo de um formulário e retorna um objeto com as informações
+Na prática, vai serializar as informações em um objeto, e também faremos a direção contrária
+
+Esta função adiciona toObject(), que pega o elemento passado e serializa o conteúdo
+
+(function($) {
+  $.fn.extend({
+    toObject: function() {
+      console.log(this.serialize());
+    }
+  });
+})(jQuery);
+
+
+A função serialize transforma um objeto em uma string
+$('form').toObject()
+
+jQuery inclui uma função para serializar conteúdo em um array, como abaixo
+$('form').serializeArray()
+
+Utilizaremos a função acima como base e iremos iterar no Array com a função auxiliar each()
+i e v são respectivamente índice e valor de cada elemento 
+
+$.each([1,4,8,16,32], function(i, v) {
+    console.log('index: '+i);
+    console.log('value: '+v)
+});
+
+Esta função pode iterar sobre arrays e objetos
+
+------------------------------------------------------------------------------------------------------------
+
+Implementação fica como a seguinte: 
+
+(function($) {
+  $.fn.extend({
+    toObject: function() {
+      var result = {}
+      $.each(this.serializeArray(), function(i, v) {
+          result[v.name] = v.value;
+      });
+      return result;
+    }
+  });
+})(jQuery);
+
+Ao executar: 
+o = $('form').toObject()
+
+A variável o agora tem um objeto com o conteúdo de form, como podemos testar chamando:
+o.task
+
+------------------------------------------------------------------------------------------------------------
+
+Agora precisamos considerar a direção contrária, receber um objeto e deserializa em um formulário
+
+Para tanto, apenas adicionamos nova propriedade na nossa função:
+
+(function($) {
+  $.fn.extend({
+    toObject: function() {
+      var result = {}
+      $.each(this.serializeArray(), function(i, v) {
+        result[v.name] = v.value;
+      });
+      return result;
+    },
+	fromObject: function(obj) {
+	
+    }
+  });
+})(jQuery);
+
+------------------------------------------------------------------------------------------------------------
+
+Precisamos saber como pegar todos os campos do formulário
+
+A linha a seguir não é suficiente, por qual razão?
+this.find('input')
+
+jQuery permite utilizarmos o seletor abaixo, para facilitar
+this.find(':input')
+
+------------------------------------------------------------------------------------------------------------
+
+
+fromObject: function(obj) {
+  $.each(this.find(':input'), function(i,v) {
+    var name = $(v).attr('name');
+    if (obj[name]) {
+      $(v).val(obj[name]);
+    } else {
+      $(v).val('');
+    }
+  });
+}
+
+
+(function($) {
+  $.fn.extend({
+    toObject: function() {
+      var result = {}
+      $.each(this.serializeArray(), function(i, v) {
+        result[v.name] = v.value;
+      });
+      return result;
+      },
+    fromObject: function(obj) {
+      $.each(this.find(':input'), function(i,v) {
+        var name = $(v).attr('name');
+        if (obj[name]) {
+          $(v).val(obj[name]);
+        } else {
+          $(v).val('');
+        }
+      });
+    }
+  });
+})(jQuery);
+
+------------------------------------------------------------------------------------------------------------
+
+Usando plugins existentes...
+
+Esta linha adiciona o plugin jquery-tmpl, disponível em https://github.com/BorisMoore/jquery-tmpl
+
+<script src= "scripts/jquery-tmpl.js"></script>
+
+Este plugin permitirá definirmos um template, que permitirá a adição de linhas à tabela existente.
+Isto também poderia ser feito por meio de geração de strings e chamadas da função add() de jQuery
+
+O template segue abaixo, observe que consiste da estrutura geral de linhas tabela, com a presença de placeholders
+Adicione antes de </html> (fora da tag <script> que já existe lá)
+
+<script id="taskRow" type="text/x-jQuery-tmpl">
+<tr>
+	<td>${task}</td>
+	<td><time datetime="${requiredBy}"> ${requiredBy}</time></td>
+	<td>${category}</td>
+	<td>
+		<nav>
+			<a href="#">Editar</a>
+			<a href="#">Completar</a>
+			<a href="#" class="deleteRow">Deletar</a>
+		</nav>
+	</td>
+</tr>
+</script>
+
+------------------------------------------------------------------------------------------------------------
+
+Altere o id do botão de salvar tarefas
+<a href="#" id="saveTask">Salvar tarefa</a>
+
+Adicione um listener ao botão de salvar, para adicionar o conteúdo da tarefa à tabela
+
+$('#saveTask').click(function(evt) {
+	evt.preventDefault();
+	var task = $('form').toObject();
+	$('#taskRow').tmpl(task).appendTo($('#tblTasks tbody'));
+});
+
+Esta função de callback serializa o conteúdo do formulário e depois gera html com base no 
+template, para então adicionar à tabela. Note que não há nenhuma validação
+
+------------------------------------------------------------------------------------------------------------
+
+Testar o debugging de chrome dev tools, adicionando breakpoint no listener de add task
+
+Clique no botão, a execução será interrompida. 
+Examine o ambiente, abra o console e digite 'evt'
+
+Compare evt.target com $(evt.target)
+
+Podemos consultar valores
+> $(evt.target).attr("id")
+
+Podemos adicionar atributos
+> $(evt.target).attr("data-test", "test")
+
+Podemos examinar a pilha de chamadas (call stack)
+
+Navegar entre eventos seguintes e chamadas de função
+
+Usar o pause button para capturar exceções
+- Trocar o código do listener de add task, colocar algo como evt.qualquerCoisa()
+
+------------------------------------------------------------------------------------------------------------
+
+Vamos começar a reestruturar a aplicação, de forma a torná-la uma real aplicação web com Javascript e jQuery
+
+Jogue o código de serialização Javascript em um arquivo, e crie outro (em branco) chamado tasks-controller.js
+Importe estes arquivos dentro de <head>
+<script src= "scripts/jquery-serialization.js"></script>
+<script src= "scripts/tasks-controller.js"></script>
+
+
+Adicione um id para a tag main logo após o header
+<main id="taskPage">
+
+Adicione um id para o formulário
+<form id="taskForm">
+
+Adicione um id para o botão de limpar tarefa
+<a href="#" id="clearTask">...
+
+
+------------------------------------------------------------------------------------------------------------
+
+Vamos começar a escrever o tasks-controller, usando o padrão module discutido em sala, isto é, closures.
+
+tasksController = function() {
+	return {
+		init : function(page) {}
+	}
+}();
+
+A diferença para o já visto é que não nomeamos a função, e já a executamos imediatamente.
+A vantagem aqui é que não é possível que outro código crie outro task controller.
+Como resultado, tasksController é um singleton, o que é importante, pois vamos usá-lo para gerenciar estado.
+
+A ideia aqui é construir algo similar ao padrão de controllers MVC, como visto em frameworks web.
+O controlador tem uma função init, que apenas será chamada quando o documento carregar. 
+Vamos passar o elemento main associado com a página, portanto, este controller será responsável por aquele 'pedaço' de DOM
+Boa prática para uma aplicação em larga escala 'single-page', neste caso, temos apenas um conjunto de funcionalidades
+
+------------------------------------------------------------------------------------------------------------
+
+Implementação do controller:
+
+tasksController = function() {
+	var taskPage;
+	var initialised = false;   
+	return {
+		init : function(page) {
+			if (!initialised) {
+				taskPage = page;
+				$(taskPage).find( '[required="required"]' ).prev('label').append( '<span>*</span>').children( 'span').addClass('required');
+				$(taskPage).find('tbody tr:even').addClass( 'even');
+				
+				$(taskPage).find( '#btnAddTask' ).click( function(evt) {
+					evt.preventDefault();
+					$(taskPage ).find('#taskCreation' ).removeClass( 'not');
+				});
+				$(taskPage).find('tbody tr' ).click(function(evt) {
+					$(evt.target ).closest('td').siblings( ).andSelf( ).toggleClass( 'rowHighlight');
+				});
+				$(taskPage ).find('#tblTasks tbody').on('click', '.deleteRow', function(evt) {
+					evt.preventDefault();
+					$(evt.target ).parents('tr').remove();
+				});
+				$(taskPage).find( '#saveTask' ).click(function(evt) {
+					evt.preventDefault();
+					var task = $('form').toObject();
+					$('#taskRow').tmpl( task).appendTo($(taskPage ).find( '#tblTasks tbody'));
+				});
+				initialised = true;
+			}
+    	}
+	}
+}();
+
+Este controller 'esconde' a variável taskPage usando técnicas vistas em sala de aula
+Utiliza a flag initialised para saber se já foi inicializado
+De resto, faz o mesmo que aquele código ao fim de tasks.html faz
+
+Portanto, precisamos alterar o código para:
+
+<script>
+$(document).ready(function() {
+	tasksController.init($('#taskPage'));
+});
+</script>
+
+
+------------------------------------------------------------------------------------------------------------
+
+Neste momento, podemos iniciar a validação do formulário
+A ideia é evitar se confiar na validação do browser
+- por ainda não ser algo disseminado
+- por não possibilitar disparar callbacks javascript
+
+Vamos usar o plugin jquery-validate (http://jqueryvalidation.org/)
+
+Ele já utiliza atributos HTML5 para automatizar processo de validação
+
+<script src= "scripts/jquery.validate.js"></script>
+
+Adicione maxlength="200" ao campo de texto da tarefa.
+
+Adicione o teste "if ($(taskPage).find('form').valid())" ao redor do código 
+que faz append da linha na tabela
+
+Tente realizar a adição de uma tarefa sem título e/ou data
+
+Inspecione os elementos adicionados à página
+
+------------------------------------------------------------------------------------------------------------
+
+Atualmente, toda vez que o usuário recarrega a página, perdemos as informações
+Antigamente, para salvar informações no cliente, só poderíamos utilizar cookies
+Ainda utilizados para guardar pequena quantidade de dados
+
+No entanto, não são suficientes para uma quantidade maior de dados, como 
+potencialmente em nossa aplicação
+- são transmitidos a cada requisição (pouco prático)
+- tem restrição de tamanho (5kb)
+- há limite na quantidade de cookies que um domínio pode armazenar 
+  (depende do browser, cerca de 20)
+
+Há três APIs atualmente que podemos utilizar para armazenar dados
+- Web Storage (disseminada em todos os principais browsers)
+- Web SQL Database API (alguns browsers já disseram que não incluirão suporte)
+- IndexedDB (até pouco tempo atrás não eram todos os browsers que suportavam)
+
+Visando a possibilidade de trocar o mecanismo de armazenamento de dados, 
+vamos definir uma API própria e depois implementar suporte a Web Storage, 
+de maneira a facilitar caso haja necessidade de migrar para IndexedDB, 
+por exemplo (implementação do padrão de projeto bridge)
+
+------------------------------------------------------------------------------------------------------------
+
+Vamos definir uma API para suportar as operações CRUD
+
+API irá operar em objetos Javascript
+- A única restrição é que objetos terão de ter uma propriedade chamada id, 
+  que será única
+
+Objetos serão armazenados de acordo com seu tipo
+- tarefas, serão armazenadas como do tipo "task" (tarefa)
+
+A ideia é separar concerns quando estivermos lidando com vários tipos de dados
+
+API trabalhará com funções de callback, ao invés de valores de retorno
+Ao chamar um método da API, serão passadas funções de callback em caso de sucesso e erro.
+Ao terminar o processamento, uma destas funções será chamada, com o resultado do processamento.
+Isto permitirá utilizarmos mecanismos de armazenamento síncronos e assíncronos. 
+Mecanismo síncrono roda na thread principal e bloqueia até ser completado.
+Por outro lado, assíncrono usa thread background, por meio da API Web Workers ou via chamada AJAX.
+
+/**
+* The client must call this to initialize the storage engine before using it.
+* If the storage engine initializes successfully the successCallback will be invoked with a null object.
+* If the errorCallback is invoked then the storage engine cannot be used.
+* It should be possible to call this method multiple times, and the same result will be returned each time.
+*
+* @param {Function} successCallback The callback that will be invoked if the storage engine initializes.
+* @param {Function} errorCallback The callback that will be invoked in error scenarios.
+*/
+function init(successCallback, errorCallback)
+
+/**
+* The client must call this to initialize a specific object type in the storage engine.
+* If the storage engine supports the object type the successCallback will be invoked with a null value.
+* It should be possible to call this method multiple times, and the same result will be returned each time.
+* If the errorCallback is invoked then the object type cannot be stored.
+*
+* @param {String} type The type of object that will be stored.
+* @param {Function} successCallback The callback that will be invoked if the storage engine initializes.
+* @param {Function} errorCallback The callback that will be invoked on error scenarios.
+*/
+function initObjectStore(type, successCallback, errorCallback)
+
+/**
+* This can be used to find all the objects for a specific type
+* If there are no objects found for that type this will return an empty array.
+*
+* @param {String} type The type of object that should be searched for.
+* @param {Function} successCallback The callback that will be invoked after the query completes. This will be passed an array of objects conforming to the requested type.
+* @param {Function} errorCallback The callback that will be invoked on error scenarios.
+*/
+function findAll(type, successCallback, errorCallback)
+
+/**
+* This will return an object with a specific id for a specific type.
+* If no object is found this will return null
+*
+* @param {String} type The type of object that should be searched for.
+* @param {String|number} id The unique ID of the object
+* @param {Function} successCallback The callback that will be invoked after the query completes. This will be passed an object conforming to the requested type or null.
+* @param {Function} errorCallback The callback that will be invoked on error scenarios.
+*/
+function findById(type, id, successCallback, errorCallback)
+
+/**
+* This will handle adding and editing objects of a specific type.
+* If the id property of the object passed in is null or undeined, an id will be assigned for the object, and it will be saved.
+* If the id property is non-null then the object will be updaed.
+* If the id cannot be found the error callback will be invoked
+* On success, the newly saved object will be returned to the success callback.
+*
+* @param {String} type The type of object that will be stored.
+* @param {Object} obj The object that will be stored.
+* @param {Function} successCallback The callback that will be invoked after the object has been committed to the storage engine. This will be the stored object, including the id property.
+* @param {Function} errorCallback The callback that will be invoked on error scenarios.
+*/
+function save(type, obj, successCallback, errorCallback)
+
+/** 
+* This will delete an object with a specific id for a specific type.* If no object exists with that id, the error callback will be invoked.”
+* If an object is deleted this function will return the id of the deleted object to the successCallback
+*
+* @param {String} type The type of object that will be deleted.
+* @param {String|number} id The unique id of the object.
+* @param {Function} successCallback The callback that will be invoked after the object has been deleted from the storage engine. This will be passed the unique id of the deleted object.
+* @param {Function} errorCallback The callback that will be invoked on error scenarios.
+*/
+function delete(type, id, successCallback, errorCallback)
+
+/**
+* This can be used for querying objects based on a property value.
+* A single property name can be passed in, along with the value that matches. Any objects with that value for the property specified will be returned.
+*
+* @param {String} type The type of object that will be searched for.
+* @param {String} propertyName The property name to be matched.”
+* @param {String|number} propertyValue The value that property should have.
+* @param {Function} successCallback The callback that will be invoked after the query completes. This will be an array of 0 or more objects of the specified type.
+* @param {Function} errorCallback The callback that will be invoked on error scenarios.
+*/
+function findByProperty(type, propertyName, propertyValue, successCallback, errorCallback)”
+
+/**
+* This will be called in all success scenarios.
+* @param {any} result The success result, as documented on individual method calls.
+*/
+function succssCallback(result)
+/**
+* This will be called in all failure scenarios.
+* @param {String} errorCode The type of exception
+* @param {String} errorMessage A human readable version of the error message.
+*/
+function errorCallback(errorCode, errorMessage)
+
+------------------------------------------------------------------------------------------------------------
+
+Teste a API Web Storage no Chrome, rodando a linha a seguir no console:
+> localStorage.setItem('item1', 'Eis o item 1')
+> localStorage.getItem('item1')
+> localStorage.removeItem('item1')
+> localStorage.clear()
+
+Existe outro objeto chamado sessionStorage, que persiste apenas durante a sessão. 
+localStorage persiste indefinidamente
+
+Bastante simples, armazena tudo como strings
+> localStorage.setItem('item1', {})
+> localStorage.getItem('item1')
+"[object Object]"
+
+Não é grande problema, pois podemos (de)serializar para/de JSON
+
+Permite armazenar apenas até 5Mb (depende do browser), e pior ainda, 
+Javascript usa UTF-16
+Uma possibilidade é utilizar algoritmos de compressão como LZW
+
+Idealmente utilizaríamos UUID para os identificadores
+Por simplicidade utilizaremos $.now(), que dá o tempo atual em ms
+
+Crie tasks-webstorage.js e importe no arquivo HTML 
+<script src= "scripts/tasks-webstorage.js"></script>
+
+------------------------------------------------------------------------------------------------------------
+
+Implementação inicial do mecanismo de armazenamento:
+
+storageEngine = function() {
+	var initialized = false;
+	var initializedObjectStores = {};
+	return {
+		init : function(successCallback, errorCallback) {
+			if (window.localStorage) {
+				initialized = true;
+				successCallback(null);
+			} 
+			else {
+				errorCallback('storage_api_not_supported', 'The web storage api is not supported');
+			}
+		},
+		initObjectStore : function(type, successCallback, errorCallback) {
+			if (!initialized) {
+				errorCallback('storage_api_not_initialized', 'The storage engine has not been initialized');
+			} 
+			else if (!localStorage.getItem(type)) {
+				localStorage.setItem(type, JSON.stringify({}));
+			}
+			initializedObjectStores[type] = true;
+			successCallback(null);
+		},
+		save : function(type, obj, successCallback, errorCallback) {},
+		findAll : function(type, successCallback, errorCallback) {},
+		delete : function(type, id, successCallback, errorCallback) {},
+		findByProperty : function(type, propertyName, propertyValue, successCallback, errorCallback) {},
+		findById : function (type, id, successCallback, errorCallback) {}
+	}
+}();
+------------------------------------------------------------------------------------------------------------
+
+Recarregando a página no browser, podemos testar:
+
+> storageEngine.init(function(){
+	console.log('Storage is initialised');
+  },
+  function(errorCode, errorMessage) {
+  	console.log(errorCode+':'+errorMessage);
+  }
+);
+
+Cria nova object store chamada 'testing'
+
+> storageEngine.initObjectStore('testing',
+	function(){
+		console.log('New type added');
+	},
+	function(errorCode, errorMessage) {
+  		console.log(errorCode+':'+errorMessage);
+  	}
+);
+
+> localStorage.testing
+
+Podemos sempre chamar init() novamente, não precisamos testar se já foi inicializado.
+
+------------------------------------------------------------------------------------------------------------
+
+Vamos definir função genérica dentro de tasksController (similar à variável privada), 
+para logar os erros. Coloque o código abaixo antes da declaração de 'var taskPage'
+
+function errorLogger(errorCode, errorMessage) {
+	console.log(errorCode +':'+ errorMessage);
+}
+
+Dentro da função init() retornada por tasks controller, vamos colocar a inicialização da web storage
+
+storageEngine.init(function() {
+		storageEngine.initObjectStore('task', function() {}, 
+		errorLogger) 
+}, errorLogger);
+
+Veja que initObjectStore só é chamada no sucesso de init(). 
+Isto é necessário para trabalhar com APIs assíncronas.
+
+------------------------------------------------------------------------------------------------------------
+
+O método save(...) é implementado da seguinte maneira:
+
+save: function(type, obj, successCallback, errorCallback) {
+	if (!initialized) {
+		errorCallback('storage_api_not_initialized', 'The storage engine has not been initialized');
+	} else if (!initializedObjectStores[type]) {
+		errorCallback('store_not_initialized', 'The object store '+type+' has not been initialized');
+	}   
+	if (!obj.id) {
+		obj.id = $.now();
+	}
+	var savedTypeString = localStorage.getItem(type);
+	var storageItem = JSON.parse(savedTypeString);
+	storageItem[obj.id] = obj;
+	localStorage.setItem(type, JSON.stringify(storageItem));
+	successCallback(obj);
+},
+
+Primeiro checamos de que init e initStoreObject já foram chamados com o 'if (!initialized)'.
+
+Depois, checamos se já há uma propriedade chamada id no objeto que queremos salvar.
+Caso não exista, pegamos o tempo atual em ms.
+
+Depois, de acordo com o tipo de objeto que desejamos salvar ('task'), pegamos a object store correspondente
+- podemos fazer isto se initObjectStore já foi chamada
+
+Depois, deserializamos a versão 'stringified' da object store e adicionamos o objeto no armazenamento
+
+Então, serializamos novamente e adicionamos a localStorage
+
+Finalmente chamamos a função de success callback
+
+------------------------------------------------------------------------------------------------------------
+
+Precisamos então atualizar o listener de salvar tarefa
+
+$(taskPage).find( '#saveTask' ).click(function(evt) {
+	evt.preventDefault();
+	if ($(taskPage).find('form').valid()) {
+		var task = $('form').toObject();
+		storageEngine.save(
+			'task', 
+			task,
+			function(savedTask) {
+				$('#taskRow').tmpl(savedTask).appendTo($(taskPage).find('#tblTasks tbody'));	
+			}, 
+			errorLogger
+		);
+	}
+});
+
+Só chamamos save se o form for validado
+Só adicionamos a linha no caso de sucesso da operação save
+
+------------------------------------------------------------------------------------------------------------
+
+Agora, vamos implementar a operação findAll()
+
+Antes, vamos definir uma helper function para obter o objeto deserializado
+
+function getStorageObject(type) {
+	var item = localStorage.getItem(type);
+	var parsedItem = JSON.parse(item);
+	return parsedItem;
+}
+
+As linhas de save(...) a seguir:
+var savedTypeString = localStorage.getItem(type);
+var storageItem = JSON.parse(savedTypeString);
+
+Serão substituídas por:
+var storageItem = getStorageObject(type); 
+
+
+findAll vai permitir carregar a lista de tarefas salva na object store, quando acessarmos a página
+
+findAll : function(type, successCallback, errorCallback) {
+	if (!initialized) {
+		errorCallback('storage_api_not_initialized', 'The storage engine has not been initialized');
+	} else if (!initializedObjectStores[type]) {
+		errorCallback('store_not_initialized', 'The object store '+type+' has not been initialized');
+	}
+	var result = [];
+	var storageItem = getStorageObject(type);
+	$.each(storageItem, function(i, v) {
+		result.push(v);
+	});
+	successCallback(result);
+}
+
+Checamos se init foi chamado
+Inicializamos um array vazio
+Pegamos a object store
+Para cada item, armazenamos o objeto no array
+Retornamos o array para a função de sucesso
+
+------------------------------------------------------------------------------------------------------------
+
+Vamos então adicionar a funcionalidade de carregar tarefas da base de dados
+
+Colocamos uma função adicional no tasks-controller, após init()
+Esta função chama findAll() e usa o template para adicionar linhas à tabela
+
+loadTasks : function() {
+	storageEngine.findAll('task', 
+		function(tasks) {
+			$.each(tasks, function(index, task) {
+				$('#taskRow').tmpl(task ).appendTo( $(taskPage ).find( '#tblTasks tbody'));
+			});
+		}, 
+		errorLogger);
+}
+
+Para ativar esta funcionalidade, basta adicionar 
+tasksController.loadTasks();
+
+Após o init de tasksController em tasks.html
+
+------------------------------------------------------------------------------------------------------------
+
+O delete ainda não funciona, vamos implementar
+
+delete : function(type, id, successCallback, errorCallback) { 
+	if (!initialized) {
+		errorCallback('storage_api_not_initialized', 'The storage engine has not been initialized');
+	} else if (!initializedObjectStores[type]) {
+		errorCallback('store_not_initialized', 'The object store '+type+' has not been initialized');
+	}
+	var storageItem = getStorageObject(type); 
+	if (storageItem[id]) {
+		delete storageItem[id];
+		localStorage.setItem(type, JSON.stringify(storageItem)); 
+		successCallback(id);
+	} else {
+		errorCallback("object_not_found","The object requested could not be found");
+	}
+},
+
+A parte mais diferente desta implementação é a linha
+delete storageItem[id];
+
+Notação especial para remover uma propriedade de um objeto
+
+Isto permite remover um elemento específico da tabela
+
+No entanto, atualmente não temos como saber qual dos botões de deletar foi pressionado
+
+Temos que mudar, no template, a linha 
+<a href="#" class="deleteRow">Deletar</a>
+
+para
+
+<a href="#" class="deleteRow" data-task-id="${id}">Deletar</a>
+
+
+Em tasks-controller, trocar implementação do listener para
+
+$(taskPage).find('#tblTasks tbody').on('click', '.deleteRow', 
+	function(evt) { 					
+		console.log('teste');
+		storageEngine.delete('task', $(evt.target).data().taskId, 
+			function() {
+				$(evt.target).parents('tr').remove(); 
+			}, errorLogger);
+	}
+);				
+
+
+------------------------------------------------------------------------------------------------------------
+
+Finalmente, podemos adicionar os dois métodos restantes, que são facilmente compreensíveis neste ponto
+
+findByProperty : function(type, propertyName, propertyValue, successCallback, errorCallback) {
+	if (!initialized) {
+		errorCallback('storage_api_not_initialized', 'The storage engine has not been initialized');
+	} else if (!initializedObjectStores[type]) {
+		errorCallback('store_not_initialized', 'The object store '+type+' has not been initialized');
+	}
+	var result = [];
+	var storageItem = getStorageObject(type); 
+	$.each(storageItem, function(i, v) {
+		if (v[propertyName] === propertyValue) {
+			result.push(v);
+		}
+	}); 
+	successCallback(result);
+},
+findById : function (type, id, successCallback, errorCallback)	{
+	if (!initialized) {
+		errorCallback('storage_api_not_initialized', 'The storage engine has not been initialized');
+	} else if (!initializedObjectStores[type]) {
+		errorCallback('store_not_initialized', 'The object store '+type+' has not been initialized');
+	}	
+	var storageItem = getStorageObject(type); 
+	var result = storageItem[id];
+	successCallback(result);
+}
+
+
+------------------------------------------------------------------------------------------------------------
+
+Agora vamos adicionar possibilidade de editar tarefas, para tanto, vamos incluir um campo escondido no form
+
+<input type="hidden" name="id" />
+
+Depois, mude o botão de editar (no template) de
+<a href="#">Editar</a>
+
+Para
+<a href="#" class="editRow" data-task-id="${id}">Editar</a>
+
+Em tasks-controller, inclua um listener adicional: 
+
+$(taskPage).find('#tblTasks tbody').on('click', '.editRow', 
+	function(evt) { 
+		$(taskPage).find('#taskCreation').removeClass('not');
+		storageEngine.findById('task', $(evt.target).data().taskId, function(task) {
+			$(taskPage).find('form').fromObject(task);
+		}, errorLogger);
+	}
+);
+
+
+Como o método save() já lida com updates, não há necessidade de criar outro método
+
+No entanto, não atualizamos a tabela após editar
+
+------------------------------------------------------------------------------------------------------------
+
+Para atualizar a tabela, modificaremos o listener do botão de salvar para
+
+$(taskPage).find('#saveTask').click(function(evt) {
+	evt.preventDefault();
+	if ($(taskPage).find('form').valid()) {
+		var task = $(taskPage).find('form').toObject();		
+		storageEngine.save('task', task, function() {
+			$(taskPage).find('#tblTasks tbody').empty();
+			tasksController.loadTasks();
+			$(':input').val('');
+			$(taskPage).find('#taskCreation').addClass('not');
+		}, errorLogger);
+	}
+});
+
+Obviamente não é a maneira mais eficiente de otimizar, mas serve por enquanto, otimizamos quando necessário
+
+Donald Knuth: "We should forget about small efficiencies, say about 97% of the time: premature optimization is the root of all evil"
+
+------------------------------------------------------------------------------------------------------------
+
+Vantagens Web Storage API
+- disseminada na maioria dos browsers
+- fácil e simples de usar
+
+Desvantagens
+- limitação de tamanho para quantidades maiores de dados
+- não suporta transactions
+- API síncrona
+
+Poderíamos implementar uma abordagem alternativa e não seria necessário alterar a aplicação, caso utilizemos
+a mesma API de storageEngine retornando mesmos métodos
+
+E aí, poderíamos ter algo como 
+
+<script>
+if (window.indexedDB) { 
+	$.getScript( "scripts/tasks-indexeddb.js" )
+	.done(function( script, textStatus ) {
+		//initMetodo()
+	})
+	.fail(function( jqxhr, settings, exception ) {
+		console.log( 'Falhou ao carregar script de indexed db' );
+	});
+} else if (window.localStorage) {
+	$.getScript( "scripts/tasks-webstorage.js" )
+	.done(function( script, textStatus ) {
+		//initMetodo()
+	})
+	.fail(function( jqxhr, settings, exception ) {
+		console.log( 'Falhou ao carregar script de web storage' );
+	});
+}
+//metodos de inicializacao...
+//initMetodo()
+</script>
+
+------------------------------------------------------------------------------------------------------------

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tarefas</title>
+<link rel="stylesheet" type="text/css" href="styles/02-tasks.css" media="screen" />
+</head>
+<body>
+	<header>
+		<span>Lista de Tarefas</span>
+	</header>
+	<main>
+		<section>
+			<form>
+				<div>
+					<label>Tarefa</label> 
+					<input type="text" required="required" name="task" class="large" placeholder="Estudar e programar" />
+				</div>
+				<div>
+					<label>Finalizar até</label> <input type="date" required="required" name="requiredBy" />
+				</div>
+				<div>
+					<label>Categoria</label> 
+					<select name="category">
+						<option value="Pessoal">Pessoal</option>
+						<option value="Profissional">Profissional</option>
+					</select>
+				</div>
+				<nav>
+					<a href="#">Salvar tarefa</a> <a href="#">Limpar tarefa</a>
+				</nav>
+			</form>
+		</section>
+		<section>
+			<table id="tblTasks">
+				<colgroup>
+					<col width="40%">
+					<col width="15%">
+					<col width="15%">
+					<col width="30%">
+				</colgroup>
+				<thead>
+					<tr>
+						<th>Nome</th>
+						<th>Deadline</th>
+						<th>Categoria</th>
+						<th>Ações</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Devolver livros emprestados</td>
+						<td><time datetime="2015-10-14">2015-10-14</time></td>
+						<td>Pessoal</td>
+						<td>
+							<nav>
+								<a href="#" class="editRow">Editar</a>
+								<a href="#" class="completeRow">Completar</a>
+								<a href="#" class="deleteRow" >Deletar</a>
+							</nav>
+						</td>
+					</tr>
+					<tr class="even">
+						<td>Apresentar projeto para os clientes</td>
+						<td><time datetime="2015-10-14">2015-10-14</time></td>
+						<td>Profissional</td>
+						<td>
+							<nav>
+								<a href="#" class="editRow">Editar</a>
+								<a href="#" class="completeRow">Completar</a>
+								<a href="#" class="deleteRow" >Deletar</a>
+							</nav>
+						</td>
+					</tr>
+					<tr>
+						<td>Encontrar o pessoal para happy hour</td>
+						<td><time datetime="2015-10-14">2015-10-14</time></td>
+						<td>Pessoal</td>
+						<td>
+							<nav>
+								<a href="#" class="editRow">Editar</a>
+								<a href="#" class="completeRow">Completar</a>
+								<a href="#" class="deleteRow" >Deletar</a>
+							</nav>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<nav>
+				<a href="#" id="btnAddTask">Adicionar tarefa</a>
+			</nav>
+		</section>
+	</main>
+	<footer>Você tem 3 tarefas</footer>
+</body>
+<script>
+	$(document).ready(function() {
+		$('[required="required"]').prev('label').append( '<span>*</span>').children( 'span').addClass('required');
+		$('tbody tr:even').addClass('even');
+	   
+		$('#btnAddTask').click(function(evt) {
+		    evt.preventDefault();
+		    $('#taskCreation').removeClass('not');
+		});
+	   
+		$('tbody tr').click(function(evt) {
+		    $(evt.target).closest('td').siblings( ).andSelf( ).toggleClass( 'rowHighlight');
+		});
+	   
+		$('#tblTasks tbody').on('click', '.deleteRow', function(evt) {
+		    evt.preventDefault();
+		    $(evt.target).parents('tr').remove();
+		});
+	});
+</script>
+</html>
