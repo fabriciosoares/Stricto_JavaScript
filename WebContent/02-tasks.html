@@ -4,20 +4,27 @@
 <meta charset="utf-8">
 <title>Tarefas</title>
 <link rel="stylesheet" type="text/css" href="styles/02-tasks.css" media="screen" />
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+<script src="scripts/jquery.tmpl.js"></script>
+<script src="scripts/jquery-serialization.js"></script>
+<script src="scripts/jquery.validate.js"></script>
+<script src="scripts/tasks-controller.js"></script>
 </head>
 <body>
 	<header>
 		<span>Lista de Tarefas</span>
 	</header>
-	<main>
-		<section>
-			<form>
+	<main id="taskPage">
+		<section id="taskCreation" class="not">
+			<form id="taskForm">
 				<div>
-					<label>Tarefa</label> 
-					<input type="text" required="required" name="task" class="large" placeholder="Estudar e programar" />
+					<label>Tarefa</label>
+					<input type="text" required="required" name="task" class="large" placeholder="Estudar e programar" maxlength="200" />
 				</div>
 				<div>
-					<label>Finalizar até</label> <input type="date" required="required" name="requiredBy" />
+					<label>Finalizar até</label>
+					<input type="date" required="required" name="requiredBy" />
 				</div>
 				<div>
 					<label>Categoria</label> 
@@ -27,7 +34,7 @@
 					</select>
 				</div>
 				<nav>
-					<a href="#">Salvar tarefa</a> <a href="#">Limpar tarefa</a>
+					<a href="#" id="saveTask">Salvar tarefa</a> <a href="#" id="clearTask">Limpar tarefa</a>
 				</nav>
 			</form>
 		</section>
@@ -94,23 +101,60 @@
 	<footer>Você tem 3 tarefas</footer>
 </body>
 <script>
-	$(document).ready(function() {
+$(document).ready(function() {
+
+	tasksController.init($('#taskPage'));
+
+	if ($(taskPage).find('form').valid()) {
 		$('[required="required"]').prev('label').append( '<span>*</span>').children( 'span').addClass('required');
 		$('tbody tr:even').addClass('even');
-	   
-		$('#btnAddTask').click(function(evt) {
-		    evt.preventDefault();
-		    $('#taskCreation').removeClass('not');
-		});
-	   
-		$('tbody tr').click(function(evt) {
-		    $(evt.target).closest('td').siblings( ).andSelf( ).toggleClass( 'rowHighlight');
-		});
-	   
-		$('#tblTasks tbody').on('click', '.deleteRow', function(evt) {
-		    evt.preventDefault();
-		    $(evt.target).parents('tr').remove();
-		});
+	}
+
+	$('#btnAddTask').click(function(evt) {
+	    evt.preventDefault();
+	    $('#taskCreation').removeClass('not');
 	});
+
+	$('tbody tr').click(function(evt) {
+	    $(evt.target).closest('td').siblings( ).andSelf( ).toggleClass( 'rowHighlight');
+	});
+
+	$('#tblTasks tbody').on('click', '.deleteRow', function(evt) {
+	    evt.preventDefault();
+	    $(evt.target).parents('tr').remove();
+	});
+
+	$('div').funcionalidadeExtra()
+
+	$('form').toObject()
+
+	$('form').serializeArray()
+
+	$.each([1,4,8,16,32], function(i, v) {
+	    console.log('index: '+i);
+	    console.log('value: '+v)
+	});
+
+	$('#saveTask').click(function(evt) {
+		evt.preventDefault();
+		var task = $('form').toObject();
+		$('#taskRow').tmpl(task).appendTo($('#tblTasks tbody'));
+	});
+
+});
+</script>
+<script id="taskRow" type="text/x-jQuery-tmpl">
+<tr>
+	<td>${task}</td>
+	<td><time datetime="${requiredBy}"> ${requiredBy}</time></td>
+	<td>${category}</td>
+	<td>
+		<nav>
+			<a href="#">Editar</a>
+			<a href="#">Completar</a>
+			<a href="#" class="deleteRow">Deletar</a>
+		</nav>
+	</td>
+</tr>
 </script>
 </html>
