@@ -1,160 +1,182 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<title>Tarefas</title>
-<link rel="stylesheet" type="text/css" href="styles/02-tasks.css" media="screen" />
-<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
-<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-<script src="scripts/jquery.tmpl.js"></script>
-<script src="scripts/jquery-serialization.js"></script>
-<script src="scripts/jquery.validate.js"></script>
-<script src="scripts/tasks-controller.js"></script>
-</head>
-<body>
-	<header>
-		<span>Lista de Tarefas</span>
-	</header>
-	<main id="taskPage">
-		<section id="taskCreation" class="not">
-			<form id="taskForm">
-				<div>
-					<label>Tarefa</label>
-					<input type="text" required="required" name="task" class="large" placeholder="Estudar e programar" maxlength="200" />
-				</div>
-				<div>
-					<label>Finalizar até</label>
-					<input type="date" required="required" name="requiredBy" />
-				</div>
-				<div>
-					<label>Categoria</label> 
-					<select name="category">
-						<option value="Pessoal">Pessoal</option>
-						<option value="Profissional">Profissional</option>
-					</select>
-				</div>
+	<head>
+		<meta charset="utf-8">
+		<title>Tarefas</title>
+		<link rel="stylesheet" type="text/css" href="styles/02-tasks.css" media="screen" />
+	</head>
+	<body>
+		<header>
+			<span>Lista de Tarefas</span>
+		</header>
+		<main id="taskPage">
+			<section id="taskCreation">
+				<form id="taskForm">
+					<input type="hidden" name="id" />
+					<div>
+						<label>Tarefa</label>
+						<input type="text" required="required" name="task" class="large" placeholder="Estudar e programar" maxlength="200" />
+					</div>
+					<div>
+						<label>Finalizar até</label>
+						<input type="date" required="required" name="requiredBy" />
+					</div>
+					<div>
+						<label>Categoria</label> 
+						<select name="category">
+							<option value="Pessoal">Pessoal</option>
+							<option value="Profissional">Profissional</option>
+						</select>
+					</div>
+					<nav>
+						<a href="#" id="saveTask">Salvar tarefa</a> <a href="#" id="clearTask">Limpar tarefa</a>
+					</nav>
+				</form>
+			</section>
+			<section>
+				<table id="tblTasks">
+					<colgroup>
+						<col width="40%">
+						<col width="15%">
+						<col width="15%">
+						<col width="30%">
+					</colgroup>
+					<thead>
+						<tr>
+							<th>Nome</th>
+							<th>Deadline</th>
+							<th>Categoria</th>
+							<th>Ações</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Devolver livros emprestados</td>
+							<td><time datetime="2015-10-14">2015-10-14</time></td>
+							<td>Pessoal</td>
+							<td>
+								<nav>
+									<a href="#" class="editRow">Editar</a>
+									<a href="#" class="completeRow">Completar</a>
+									<a href="#" class="deleteRow">Deletar</a>
+								</nav>
+							</td>
+						</tr>
+						<tr class="even">
+							<td>Apresentar projeto para os clientes</td>
+							<td><time datetime="2015-10-14">2015-10-14</time></td>
+							<td>Profissional</td>
+							<td>
+								<nav>
+									<a href="#" class="editRow">Editar</a>
+									<a href="#" class="completeRow">Completar</a>
+									<a href="#" class="deleteRow">Deletar</a>
+								</nav>
+							</td>
+						</tr>
+						<tr>
+							<td>Encontrar o pessoal para happy hour</td>
+							<td><time datetime="2015-10-14">2015-10-14</time></td>
+							<td>Pessoal</td>
+							<td>
+								<nav>
+									<a href="#" class="editRow">Editar</a>
+									<a href="#" class="completeRow">Completar</a>
+									<a href="#" class="deleteRow">Deletar</a>
+								</nav>
+							</td>
+						</tr>
+					</tbody>
+				</table>
 				<nav>
-					<a href="#" id="saveTask">Salvar tarefa</a> <a href="#" id="clearTask">Limpar tarefa</a>
+					<a href="#" id="btnAddTask">Adicionar tarefa</a>
 				</nav>
-			</form>
-		</section>
-		<section>
-			<table id="tblTasks">
-				<colgroup>
-					<col width="40%">
-					<col width="15%">
-					<col width="15%">
-					<col width="30%">
-				</colgroup>
-				<thead>
-					<tr>
-						<th>Nome</th>
-						<th>Deadline</th>
-						<th>Categoria</th>
-						<th>Ações</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>Devolver livros emprestados</td>
-						<td><time datetime="2015-10-14">2015-10-14</time></td>
-						<td>Pessoal</td>
-						<td>
-							<nav>
-								<a href="#" class="editRow">Editar</a>
-								<a href="#" class="completeRow">Completar</a>
-								<a href="#" class="deleteRow" >Deletar</a>
-							</nav>
-						</td>
-					</tr>
-					<tr class="even">
-						<td>Apresentar projeto para os clientes</td>
-						<td><time datetime="2015-10-14">2015-10-14</time></td>
-						<td>Profissional</td>
-						<td>
-							<nav>
-								<a href="#" class="editRow">Editar</a>
-								<a href="#" class="completeRow">Completar</a>
-								<a href="#" class="deleteRow" >Deletar</a>
-							</nav>
-						</td>
-					</tr>
-					<tr>
-						<td>Encontrar o pessoal para happy hour</td>
-						<td><time datetime="2015-10-14">2015-10-14</time></td>
-						<td>Pessoal</td>
-						<td>
-							<nav>
-								<a href="#" class="editRow">Editar</a>
-								<a href="#" class="completeRow">Completar</a>
-								<a href="#" class="deleteRow" >Deletar</a>
-							</nav>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-			<nav>
-				<a href="#" id="btnAddTask">Adicionar tarefa</a>
-			</nav>
-		</section>
-	</main>
-	<footer>Você tem 3 tarefas</footer>
-</body>
-<script>
-$(document).ready(function() {
+			</section>
+		</main>
+		<footer>Você tem 3 tarefas</footer>
+	</body>
 
-	tasksController.init($('#taskPage'));
+	<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+	<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+	<script src="scripts/jquery-tmpl.js"></script>
+	<script src="scripts/jquery-serialization.js"></script>
+	<script src="scripts/jquery.validate.js"></script>
+	<script src="scripts/tasks-controller.js"></script>
+	<script src="scripts/tasks-webstorage.js"></script>
 
-	if ($(taskPage).find('form').valid()) {
-		$('[required="required"]').prev('label').append( '<span>*</span>').children( 'span').addClass('required');
-		$('tbody tr:even').addClass('even');
-	}
+	<script>
 
-	$('#btnAddTask').click(function(evt) {
-	    evt.preventDefault();
-	    $('#taskCreation').removeClass('not');
-	});
+		if (window.indexedDB) { 
+			$.getScript( "scripts/tasks-indexeddb.js" )
+			.done(function( script, textStatus ) {})
+			.fail(function( jqxhr, settings, exception ) {
+				console.log( 'Falhou ao carregar script de indexed db' );
+			});
+		} else if (window.localStorage) {
+			$.getScript( "scripts/tasks-webstorage.js" )
+			.done(function( script, textStatus ) {
+			})
+			.fail(function( jqxhr, settings, exception ) {
+				console.log( 'Falhou ao carregar script de web storage' );
+			});
+		}
+		
+		$(document).ready(function() {
+		
+			function errorLogger(errorCode, errorMessage) {
+				console.log(errorCode +':'+ errorMessage);
+			}
+			
+			storageEngine.init(function() {
+				storageEngine.initObjectStore('task', function() {}, 
+				errorLogger) 
+			}, errorLogger);
+		
+			tasksController.init($('#taskPage'));
+			
+			tasksController.loadTasks();
 
-	$('tbody tr').click(function(evt) {
-	    $(evt.target).closest('td').siblings( ).andSelf( ).toggleClass( 'rowHighlight');
-	});
+			$('#btnAddTask').click(function(evt) {
+			    evt.preventDefault();
+			    $('#taskCreation').removeClass('not');
+			});
+		
+			$('tbody tr').click(function(evt) {
+			    $(evt.target).closest('td').siblings( ).andSelf( ).toggleClass( 'rowHighlight');
+			});
+		
+			$('#tblTasks tbody').on('click', '.deleteRow', function(evt) {
+			    evt.preventDefault();
+			    $(evt.target).parents('tr').remove();
+			});
+		
+			$('div').funcionalidadeExtra()
+		
+			$('form').toObject()
+		
+			$('form').serializeArray()
+		
+			$.each([1,4,8,16,32], function(i, v) {
+			    console.log('index: '+i);
+			    console.log('value: '+v)
+			});
 
-	$('#tblTasks tbody').on('click', '.deleteRow', function(evt) {
-	    evt.preventDefault();
-	    $(evt.target).parents('tr').remove();
-	});
+		});
+		</script>
 
-	$('div').funcionalidadeExtra()
-
-	$('form').toObject()
-
-	$('form').serializeArray()
-
-	$.each([1,4,8,16,32], function(i, v) {
-	    console.log('index: '+i);
-	    console.log('value: '+v)
-	});
-
-	$('#saveTask').click(function(evt) {
-		evt.preventDefault();
-		var task = $('form').toObject();
-		$('#taskRow').tmpl(task).appendTo($('#tblTasks tbody'));
-	});
-
-});
-</script>
-<script id="taskRow" type="text/x-jQuery-tmpl">
-<tr>
-	<td>${task}</td>
-	<td><time datetime="${requiredBy}"> ${requiredBy}</time></td>
-	<td>${category}</td>
-	<td>
-		<nav>
-			<a href="#">Editar</a>
-			<a href="#">Completar</a>
-			<a href="#" class="deleteRow">Deletar</a>
-		</nav>
-	</td>
-</tr>
-</script>
+		<script id="taskRow" type="text/x-jQuery-tmpl">
+		<tr>
+			<td>${task}</td>
+			<td><time datetime="${requiredBy}"> ${requiredBy}</time></td>
+			<td>${category}</td>
+			<td>
+				<nav>
+					<a href="#" class="editRow" data-task-id="${id}">Editar</a>
+					<a href="#">Completar</a>
+					<a href="#" class="deleteRow" data-task-id="${id}">Deletar</a>
+				</nav>
+			</td>
+		</tr>
+	</script>
+	
 </html>

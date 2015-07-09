@@ -62,10 +62,6 @@ td {
 	padding-left: 10px;
 }
 
-.even {
-	background-color: #f8f8f8;
-}
-
 nav {
 	margin:15px 0 10px 0;
 }
@@ -87,6 +83,11 @@ label {
 	color: #333;
 }
 
+label.error {
+	color: red;
+	font-weight:bold;
+}
+
 input {
 	border-radius: 3px;
 	height: 24px;
@@ -105,6 +106,10 @@ select {
 	width: 200px;
 }
 
+.even {
+	background-color: #f8f8f8;
+}
+
 .required {
 	color: red;
 }
@@ -114,11 +119,6 @@ select {
 }
 
 .rowHighlight {
-	font-weight:bold;
-}
-
-label.error {
-	color: red;
 	font-weight:bold;
 }
 
