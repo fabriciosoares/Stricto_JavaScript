@@ -4,13 +4,20 @@
 		<meta charset="utf-8">
 		<title>Tarefas</title>
 		<link rel="stylesheet" type="text/css" href="styles/02-tasks.css" media="screen" />
+		<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+		<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+		<script src="scripts/jquery-serialization.js"></script>
+		<script src="scripts/jquery-tmpl.js"></script>
+		<script src="scripts/jquery.validate.js"></script>
+		<script src="scripts/tasks-controller.js"></script>
+		<script src="scripts/tasks-webstorage.js"></script>
 	</head>
 	<body>
 		<header>
 			<span>Lista de Tarefas</span>
 		</header>
 		<main id="taskPage">
-			<section id="taskCreation">
+			<section id="taskCreation" class="not">
 				<form id="taskForm">
 					<input type="hidden" name="id" />
 					<div>
@@ -56,9 +63,9 @@
 							<td>Pessoal</td>
 							<td>
 								<nav>
-									<a href="#" class="editRow">Editar</a>
+									<a href="#" class="editRow" data-task-id="${id}">Editar</a>
 									<a href="#" class="completeRow">Completar</a>
-									<a href="#" class="deleteRow">Deletar</a>
+									<a href="#" class="deleteRow"  data-task-id="${id}">Deletar</a>
 								</nav>
 							</td>
 						</tr>
@@ -68,9 +75,9 @@
 							<td>Profissional</td>
 							<td>
 								<nav>
-									<a href="#" class="editRow">Editar</a>
+									<a href="#" class="editRow" data-task-id="${id}">Editar</a>
 									<a href="#" class="completeRow">Completar</a>
-									<a href="#" class="deleteRow">Deletar</a>
+									<a href="#" class="deleteRow"  data-task-id="${id}">Deletar</a>
 								</nav>
 							</td>
 						</tr>
@@ -80,9 +87,9 @@
 							<td>Pessoal</td>
 							<td>
 								<nav>
-									<a href="#" class="editRow">Editar</a>
+									<a href="#" class="editRow" data-task-id="${id}">Editar</a>
 									<a href="#" class="completeRow">Completar</a>
-									<a href="#" class="deleteRow">Deletar</a>
+									<a href="#" class="deleteRow" data-task-id="${id}">Deletar</a>
 								</nav>
 							</td>
 						</tr>
@@ -96,15 +103,12 @@
 		<footer>Você tem 3 tarefas</footer>
 	</body>
 
-	<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
-	<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-	<script src="scripts/jquery-tmpl.js"></script>
-	<script src="scripts/jquery-serialization.js"></script>
-	<script src="scripts/jquery.validate.js"></script>
-	<script src="scripts/tasks-controller.js"></script>
-	<script src="scripts/tasks-webstorage.js"></script>
-
 	<script>
+
+		$(document).ready(function() {
+			tasksController.init($('#taskPage'));
+			tasksController.loadTasks();
+		});
 
 		if (window.indexedDB) { 
 			$.getScript( "scripts/tasks-indexeddb.js" )
@@ -120,51 +124,10 @@
 				console.log( 'Falhou ao carregar script de web storage' );
 			});
 		}
-		
-		$(document).ready(function() {
-		
-			function errorLogger(errorCode, errorMessage) {
-				console.log(errorCode +':'+ errorMessage);
-			}
-			
-			storageEngine.init(function() {
-				storageEngine.initObjectStore('task', function() {}, 
-				errorLogger) 
-			}, errorLogger);
-		
-			tasksController.init($('#taskPage'));
-			
-			tasksController.loadTasks();
 
-			$('#btnAddTask').click(function(evt) {
-			    evt.preventDefault();
-			    $('#taskCreation').removeClass('not');
-			});
-		
-			$('tbody tr').click(function(evt) {
-			    $(evt.target).closest('td').siblings( ).andSelf( ).toggleClass( 'rowHighlight');
-			});
-		
-			$('#tblTasks tbody').on('click', '.deleteRow', function(evt) {
-			    evt.preventDefault();
-			    $(evt.target).parents('tr').remove();
-			});
-		
-			$('div').funcionalidadeExtra()
-		
-			$('form').toObject()
-		
-			$('form').serializeArray()
-		
-			$.each([1,4,8,16,32], function(i, v) {
-			    console.log('index: '+i);
-			    console.log('value: '+v)
-			});
+	</script>
 
-		});
-		</script>
-
-		<script id="taskRow" type="text/x-jQuery-tmpl">
+	<script id="taskRow" type="text/x-jQuery-tmpl">
 		<tr>
 			<td>${task}</td>
 			<td><time datetime="${requiredBy}"> ${requiredBy}</time></td>
@@ -178,5 +141,5 @@
 			</td>
 		</tr>
 	</script>
-	
+
 </html>
