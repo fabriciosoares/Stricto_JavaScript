@@ -36,7 +36,7 @@
 						</select>
 					</div>
 					<nav>
-						<a href="#" id="saveTask">Salvar tarefa</a> <a href="#" id="clearTask">Limpar tarefa</a>
+						<a href="#" id="saveTask">Salvar tarefa</a> <a href="#" onclick="javascript:eraseText();" >Limpar tarefa</a>
 					</nav>
 				</form>
 			</section>
@@ -56,8 +56,8 @@
 							<th>Ações</th>
 						</tr>
 					</thead>
-					<tbody>
-						<tr>
+					<tbody id="tblLines">
+						<tr class="even">
 							<td>Devolver livros emprestados</td>
 							<td><time datetime="2015-10-14">2015-10-14</time></td>
 							<td>Pessoal</td>
@@ -81,7 +81,7 @@
 								</nav>
 							</td>
 						</tr>
-						<tr>
+						<tr class="even">
 							<td>Encontrar o pessoal para happy hour</td>
 							<td><time datetime="2015-10-14">2015-10-14</time></td>
 							<td>Pessoal</td>
@@ -100,7 +100,7 @@
 				</nav>
 			</section>
 		</main>
-		<footer>Você tem 3 tarefas</footer>
+		<footer>Você tem <span id="taskCount"></span> tarefas</footer>
 	</body>
 
 	<script>
@@ -124,6 +124,16 @@
 				console.log( 'Falhou ao carregar script de web storage' );
 			});
 		}
+
+		function eraseText() {
+			$('input[type=text]').val('');
+			$('input[type=date]').val('');
+		}
+
+		function lineCount() {
+			return $("#tblLines tr").length;
+		}
+		document.getElementById("taskCount").innerHTML = lineCount();
 
 	</script>
 
