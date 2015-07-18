@@ -6,9 +6,11 @@
 		<link rel="stylesheet" type="text/css" href="styles/02-tasks.css" media="screen" />
 		<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
 		<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+		<script src="scripts/date.js"></script>
 		<script src="scripts/jquery-serialization.js"></script>
 		<script src="scripts/jquery-tmpl.js"></script>
 		<script src="scripts/jquery.validate.js"></script>
+		<script src="scripts/jquery.dataTables.min.js"></script>
 		<script src="scripts/tasks-controller.js"></script>
 		<script src="scripts/tasks-webstorage.js"></script>
 	</head>
@@ -20,6 +22,7 @@
 			<section id="taskCreation" class="not">
 				<form id="taskForm">
 					<input type="hidden" name="id" />
+					<input type="hidden" name="completo" value="false"/>
 					<div>
 						<label>Tarefa</label>
 						<input type="text" required="required" name="task" class="large" placeholder="Estudar e programar" maxlength="200" />
@@ -36,7 +39,8 @@
 						</select>
 					</div>
 					<nav>
-						<a href="#" id="saveTask">Salvar tarefa</a> <a href="#" onclick="javascript:eraseText();" >Limpar tarefa</a>
+						<a href="#" id="saveTask">Salvar tarefa</a>
+						<a href="#" onclick="javascript:eraseText();">Limpar tarefa</a>
 					</nav>
 				</form>
 			</section>
@@ -56,7 +60,7 @@
 							<th>Ações</th>
 						</tr>
 					</thead>
-					<tbody id="tblLines">
+					<tbody>
 						<tr class="even">
 							<td>Devolver livros emprestados</td>
 							<td><time datetime="2015-10-14">2015-10-14</time></td>
@@ -69,7 +73,7 @@
 								</nav>
 							</td>
 						</tr>
-						<tr class="even">
+					<tr class="even">
 							<td>Apresentar projeto para os clientes</td>
 							<td><time datetime="2015-10-14">2015-10-14</time></td>
 							<td>Profissional</td>
@@ -81,7 +85,7 @@
 								</nav>
 							</td>
 						</tr>
-						<tr class="even">
+					<tr class="even">
 							<td>Encontrar o pessoal para happy hour</td>
 							<td><time datetime="2015-10-14">2015-10-14</time></td>
 							<td>Pessoal</td>
@@ -130,22 +134,19 @@
 			$('input[type=date]').val('');
 		}
 
-		function lineCount() {
-			return $("#tblLines tr").length;
-		}
-		document.getElementById("taskCount").innerHTML = lineCount();
-
 	</script>
 
 	<script id="taskRow" type="text/x-jQuery-tmpl">
 		<tr>
-			<td>${task}</td>
-			<td><time datetime="${requiredBy}"> ${requiredBy}</time></td>
-			<td>${category}</td>
+			<td {{if completo == true}} class="taskCompleted" {{/if}}>${task}</td>
+			<td {{if completo == true}} class="taskCompleted" {{/if}}><time datetime="${requiredBy}"> ${requiredBy}</time></td>
+			<td {{if completo == true}} class="taskCompleted" {{/if}}>${category}</td>
 			<td>
 				<nav>
-					<a href="#" class="editRow" data-task-id="${id}">Editar</a>
-					<a href="#">Completar</a>
+					{{if completo != true}}
+						<a href="#" class="editRow" data-task-id="${id}">Editar</a>
+						<a href="#" class="completeRow" data-task-id="${id}">Completar</a>
+					{{/if}}	
 					<a href="#" class="deleteRow" data-task-id="${id}">Deletar</a>
 				</nav>
 			</td>
