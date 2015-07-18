@@ -4,13 +4,14 @@
 		<meta charset="utf-8">
 		<title>Tarefas</title>
 		<link rel="stylesheet" type="text/css" href="styles/02-tasks.css" media="screen" />
-		<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
-		<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+	<!--  	<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+		<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script> -->
+		<script src="scripts/jquery-2.1.4.js"></script>
 		<script src="scripts/date.js"></script>
 		<script src="scripts/jquery-serialization.js"></script>
 		<script src="scripts/jquery-tmpl.js"></script>
 		<script src="scripts/jquery.validate.js"></script>
-		<script src="scripts/jquery.dataTables.min.js"></script>
+		<script src="scripts/jquery.dataTables.js"></script>
 		<script src="scripts/tasks-controller.js"></script>
 		<script src="scripts/tasks-webstorage.js"></script>
 	</head>
@@ -33,8 +34,8 @@
 					</div>
 					<div>
 						<label>Categoria</label> 
-						<select name="category">
-							<option value="Pessoal">Pessoal</option>
+						<select name="category" required="required">
+							<option value="Pessoal" selected="selected">Pessoal</option>
 							<option value="Profissional">Profissional</option>
 						</select>
 					</div>

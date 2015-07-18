@@ -118,16 +118,12 @@ tasksController = function() {
 			$(taskPage).find('#tblTasks tbody').empty();
 			storageEngine.findAll('task', function(tasks) {
 				// (5) Aplicado a função sort conforme solicitado no exercício.
-				// Para tal finalidade foi utilizado o arquivo jquery 'jquery.dataTables.min.js',
-				// que também aplicou na página as funções "Show - entries" que restringe
-				// a quantidade de linhas na página;  "Search" que faz pesquisa dinâmica pelo
-				// conteúdo das linhas da tabela;  A navegação "previous"/"next"; E uma função
-				// que demonstra a quantidade de páginas processadas
-				$(document).ready(function() {
-					$('#tblTasks').dataTable( {
-						"order": [[ 1, "desc" ]]
-					});
-				} );
+				tasks.sort(function(task1,task2) {
+					var date1, date2;
+					date1 = Date.parse(task1.requiredBy);
+					date2 = Date.parse(task2.requiredBy);
+					return date2.compareTo(date1);
+				});
 				$.each(tasks, function(index, task) {
 					if (task.id) {
 						// (4) Caso a tarefa não tenha a flag 'completo' alimentada o sistema
@@ -144,8 +140,7 @@ tasksController = function() {
 						destacaCriticidade();
 					}
 				});
-			}, 
-			errorLogger);
+			}, errorLogger);
 		}
 	}
 }();
