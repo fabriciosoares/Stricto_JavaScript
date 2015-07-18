@@ -40,7 +40,9 @@
 					</div>
 					<nav>
 						<a href="#" id="saveTask">Salvar tarefa</a>
-						<a href="#" onclick="javascript:eraseText();">Limpar tarefa</a>
+						<!-- (2) Botão "Limpar tarefa" aciona o evento de mouse "limpaCampos()" -->
+						<!-- a função JavaScript "limpaCampos() se encontra neste mesmo arquivo -->
+						<a href="#" onclick="javascript:limpaCampos();">Limpar tarefa</a>
 					</nav>
 				</form>
 			</section>
@@ -104,6 +106,7 @@
 				</nav>
 			</section>
 		</main>
+		<!-- (1) Incluido o "taskCount" conforme orientado no exercício -->
 		<footer>Você tem <span id="taskCount"></span> tarefas</footer>
 	</body>
 
@@ -129,7 +132,9 @@
 			});
 		}
 
-		function eraseText() {
+		// (2) Função "limpaCampos" limpa o campo "Tarefa" que é um texto e o campo
+		// "Finalizar até" que é uma data.
+		function limpaCampos() {
 			$('input[type=text]').val('');
 			$('input[type=date]').val('');
 		}
@@ -138,11 +143,15 @@
 
 	<script id="taskRow" type="text/x-jQuery-tmpl">
 		<tr>
+			<!-- (4) Caso a linha esteja com a flag 'completo' marcada como true -->
+			<!-- o sistema vai utilizar a classe de css 'taskCompleted -->
 			<td {{if completo == true}} class="taskCompleted" {{/if}}>${task}</td>
 			<td {{if completo == true}} class="taskCompleted" {{/if}}><time datetime="${requiredBy}"> ${requiredBy}</time></td>
 			<td {{if completo == true}} class="taskCompleted" {{/if}}>${category}</td>
 			<td>
 				<nav>
+					<!-- (4) Caso a linha esteja com a flag 'completo' marcada como true -->
+					<!-- o sistema vai desconsiderar os botões 'Editar' e 'Completar' -->
 					{{if completo != true}}
 						<a href="#" class="editRow" data-task-id="${id}">Editar</a>
 						<a href="#" class="completeRow" data-task-id="${id}">Completar</a>

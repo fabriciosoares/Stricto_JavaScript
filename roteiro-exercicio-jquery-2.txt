@@ -1,0 +1,49 @@
+TarefaLeopoldo Teixeira – 1 de jul
+Exercício 2
+Com base no resultado do exercício 1, complete as seguintes tarefas:
+
+************************************************************************************************************
+
+1. Atualizar a contagem no rodapé ao carregar e quando modificar quantidade de tarefas
+
+Atualmente está fixo: "<footer>Você tem 3 tarefas</footer>"
+Troque para algo como "<footer>Você tem <span id="taskCount"></span> tarefas</footer>"
+Desta forma, será possível atualizar na medida que tarefas forem adicionadas, deletadas, completadas.
+
+************************************************************************************************************
+
+2. Ativar o botão de limpar tarefa (simplesmente limpar o conteúdo do formulário)
+
+************************************************************************************************************
+
+3. Destacar tarefas que já passaram do deadline
+
+As classes overdue e warning no CSS já existem
+overdue - passou da data
+warning - ta chegando perto
+Sugestão: usar biblioteca datejs.com
+
+************************************************************************************************************
+
+4. Marcar tarefas como completadas (usando strikethrough no texto)
+
+A classe .taskCompleted já existe no arquivo CSS
+Implemente de acordo com as suas respostas às questões abaixo:
+- Como guardar que uma tarefa foi completada?
+- Como evitar que uma tarefa já completada seja completada novamente? (esconder botão?)
+- Como evitar que uma tarefa já completada seja editada? (esconder botão?)
+- Exibir no rodapé apenas contagem de tarefas não completadas
+
+************************************************************************************************************
+
+5. Exibir as tarefas ordenadas na aplicação
+
+Utilize a função sort, ordene pela data da tarefa (mais recentes primeiro)
+
+************************************************************************************************************
+
+6. Implementar novo mecanismo de persistência, usando WebSQL ou IndexedDB, seguindo a interface vista em sala, que permite trocar os mecanismos sem prejuízo ao código da aplicação.
+
+************************************************************************************************************
+
+Todo o código da aplicação deve ser comentado com as suas explicações para a implementação de cada um dos pontos (1 - 6), explicando o raciocínio utilizado na implementação.
